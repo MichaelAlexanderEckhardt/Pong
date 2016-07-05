@@ -1,0 +1,72 @@
+<p> Bat up with W, Bat down with S. Click Canvas to focus.</p>
+<canvas tabindex="0" id="myCanvas" width="1024px" height="768px" style="border:1px solid black;"></canvas>
+
+<script type="text/javascript" >
+
+var can = document.getElementById("myCanvas");
+var ctx = can.getContext("2d");
+
+// Ball position(x|y) and ball speed (x|y)
+var ballX = 1024/2,
+	ballY = 768/2,
+	bSpeedX = -5,
+	bSpeedY = 5;
+// Bat position (y), bat height and bat speed (y)
+var batH = 64, 
+	batY = (768/2) - (batH/2),
+	batS = 15;
+	
+// Event KeyDown
+can.addEventListener("keydown",keyDown,true);
+	
+// Interval of function update()
+setInterval(update,1000/60);
+	
+function keyDown(e){
+	
+	if(e.keyCode == 87 && batY >= 32){
+		batY -= batS;
+	}
+	if(e.keyCode == 83 && batY <= 736 - batH){
+		batY += batS;
+	}
+	
+}
+	
+function update(){
+	// Clear screen each frame.
+	ctx.clearRect(0,0,1024,768);
+	// Create the top,left and bot wall.
+	ctx.fillRect(0,0,1024,32);
+	ctx.fillRect(0,0,32,768);
+	ctx.fillRect(0,736,1024,32);
+	// Create ball.
+	ctx.fillRect(ballX+= bSpeedX,ballY += bSpeedY,8,8);
+	// Create bat.
+	ctx.fillRect(1000,batY,8,batH);
+	
+	// Ball movement.
+	// If ball touch the top or bot wall then ballspeedY * -1.
+	if(ballY <= 32 || ballY >= 736){
+		bSpeedY *= -1;
+	}
+	// If ball touch the left wall then ballspeedX * -1.
+	if(ballX <= 32) {
+		bSpeedX *= -1;	
+	}
+	// If ball touch the right wall then reset the ball and ballspeed * -1.
+	if(ballX >= 1020){
+		ballX = 1024/2;
+		ballY = 768/2;
+		bSpeedX = 5;
+		bSpeedY = 5;
+		bSpeedX *= -1;
+		bSpeedY *= -1;
+	}
+	// If ball touch the bat then ballspeed * -1.5;
+	if(ballX >= 1000 && (ballY >= batY && ballY <= batY+batH)){
+		bSpeedX *= -1.05;
+	}
+}
+	
+</script>
